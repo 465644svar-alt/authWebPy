@@ -1,14 +1,14 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app.forms import EditProfileForm
-from app import db, bcrypt
+from app import app, db, bcrypt
 from .models import User
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required  # Только для авторизованных пользователей
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(current_user)
 
     # При первом открытии формы подставляем текущие данные пользователя
     if request.method == 'GET':

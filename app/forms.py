@@ -19,15 +19,19 @@ class EditProfileForm(FlaskForm):
 
     submit = SubmitField('Обновить профиль')
 
+    def __init__(self, original_user, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.original_user = original_user
+
     # Валидация уникальности имени пользователя
     def validate_username(self, username):
         # Проверка, не занято ли имя другим пользователем, кроме текущего
         user = User.query.filter_by(username=username.data).first()
-        if user and user.id != current_user.id:
+        if user and user.id != self.original_user.id:
             raise ValidationError('Это имя пользователя уже занято.')
 
     def validate_email(self, email):
         # Проверка, не используется ли email другим пользователем, кроме текущего
         user = User.query.filter_by(email=email.data).first()
-        if user and user.id != current_user.id:
+        if user and user.id != self.original_user.id:
             raise ValidationError('Этот email уже используется.')
